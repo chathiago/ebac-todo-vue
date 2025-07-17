@@ -1,5 +1,8 @@
 <script setup>
 import { reactive } from 'vue';
+import Cabecalho from './components/Cabecalho.vue';
+import Formulario from './components/Formulario.vue';
+import Tarefas from './components/Tarefas.vue';
 
 const estado = reactive({
   filtro: 'todas',
@@ -55,43 +58,9 @@ const cadastrarTarefa = () => {
 <template>
 
   <div class="container">
-    <header class="p-5 mb-4 mt-4 bg-light rounded-3">
-      <h1>Minhas Tarefas</h1>
-      <p>Você tem <strong> {{ getPendentes().length }} </strong> tarefas pendentes.</p>
-    </header>
-
-    <form @submit.prevent="cadastrarTarefa">
-      <div class="row">
-        <div class="col">
-          <input type="text" class="form-control" placeholder="Digite uma tarefa" required @change="e => estado.tarefaTemp = e.target.value" :value="estado.tarefaTemp"/>
-        </div>
-        <div class="col-md-2">
-          <button type="submit" class="btn btn-primary">Adicionar</button>
-        </div>
-        <div class="col-md-2">
-          <select class="form-control" @change="(e) => estado.filtro = e.target.value">
-            <option value="todas">Todas</option>
-            <option value="pendente">Pendentes</option>
-            <option value="concluida">Finalizadas</option>
-          </select>
-        </div>
-      </div>
-    </form>
-
-    <ul class="list-group mt-4">
-      <li class="list-group-item" v-for="tarefa in getFiltradas()">
-        <input type="checkbox" :checked="tarefa.concluida" :id="tarefa.titulo" @change="e => tarefa.concluida = e.target.checked"/>
-        <label :class="{ done: tarefa.concluida }" class="ms-3" :for="tarefa.titulo"> {{ tarefa.titulo }} </label>
-      </li>
-    </ul>
+    <Cabecalho :tarefas-pendentes="getPendentes().length"/>
+    <Formulario :tarefa-temp="estado.tarefaTemp" :editar-tarefa="e => estado.tarefaTemp = e.target.value" :cadastrar-tarefa="cadastrarTarefa" :trocar-filtro="e => estado.filtro = e.target.value"/>
+    <Tarefas :tarefas="getFiltradas()"/>
   </div>
 
 </template>
-
-<style scoped>
-
-.done {
-  text-decoration: line-through;
-}
-
-</style>
